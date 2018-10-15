@@ -1,0 +1,96 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 40vmin;
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.App-content {
+/ / background-color: #282c34;
+    min-height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+/ / color: white;
+}
+
+.t-grid {
+    border: 1px solid lightgrey;
+    border-collapse: collapse;
+    border-radius: 3px;
+
+    font-size: 10px;
+    margin-top: 20px;
+}
+
+th {
+    background-color: ghostwhite;
+    border-bottom: 1px solid darkgrey;
+}
+
+th:not(:last-child){
+    border-right: 1px solid lightgrey;
+}
+
+tr:not(:last-child) td{
+    border-bottom: 1px solid lightgrey;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 5px 10px;
+    text-align: left;
+}
+
+th.agent-id {
+    width: 50px;
+}
+
+th.country {
+    width: 50px;
+}
+
+th.address {
+    width: 250px;
+}
+
+th.date {
+    width: 150px;
+}
+
+tfoot {
+    background-color: ghostwhite;
+    border-top: 1px solid darkgrey;
+
+}
+tfoot td {
+    text-align: right;
+}
