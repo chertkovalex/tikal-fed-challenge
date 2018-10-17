@@ -1,73 +1,56 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { forEach, maxBy, reduce } from 'lodash';
+import React from 'react';
 
-const nAgents = {};
-const nCountries = {};
+const getCountryIsolationDegree = (country, nAgents) =>
+  country.reduce((degree, agent) => degree + nAgents[agent].isolated, 0);
 
-const getNormalizedCountriesByAgents = agentsList => {
-  // First - get an array of unique countries with number of isolated agents
-  forEach(agentsList, value => {
-    const { agent, country } = value;
+const getCountriesAndAgentsNormalized = agentsList => {
+  return agentsList.reduce(
+    (acc, value) => {
+      const { agent, country } = value;
 
-    // Check whether an agent is isolated
-    if (nAgents[agent]) {
-      nAgents[agent].isolated = 0;
-    } else {
-      nAgents[agent] = { isolated: 1 };
-    }
+      // Check whether an agent is isolated
+      acc.agents[agent] = { isolated: acc.agents[agent] ? 0 : 1 };
 
-    // Check if there is already a country
-    if (!nCountries[country]) {
-      nCountries[country] = { agents: {} };
-    }
+      // Check if there is already a country
+      if (!acc.countries[country]) {
+        acc.countries[country] = [];
+      }
 
-    // Check if there is already an agent in a country
-    if (!nCountries[country].agents[agent]) {
-      nCountries[country].agents[agent] = agent;
-    }
-  });
-
-  return nCountries;
-};
-
-const getCountriesIsolationDegree = countries => {
-  return reduce(
-    countries,
-    (result, country, countryName) => {
-      const { agents } = country;
-      const isolationDegree = reduce(
-        agents,
-        (degree, agent) => {
-          return degree + nAgents[agent].isolated;
-        },
-        0
-      );
-
-      result.push({ country: countryName, isolationDegree });
-      return result;
+      // Check if there is already an agent in a country
+      if (!acc.countries[country].find(ag => ag === agent)) {
+        acc.countries[country].push(agent);
+      }
+      return acc;
     },
-    []
+    { countries: {}, agents: {} }
   );
 };
 
-class Agent extends Component {
-  static propTypes = {
-    agentsList: PropTypes.array.isRequired
-  };
+const getMaxIsolatedCountry = ({ countries, agents }) => {
+  // Go over countries
+  return Object.keys(countries).reduce((acc, countryName) => {
+    // Get isolation degree per country
+    const degree = getCountryIsolationDegree(countries[countryName], agents);
 
-  render() {
-    const nc = getNormalizedCountriesByAgents(this.props.agentsList);
-    const isolationDegrees = getCountriesIsolationDegree(nc);
-    const maxIsolatedCountry = maxBy(isolationDegrees, 'isolationDegree');
+    // If there isn't any country or country's degree is lower than current country's degree
+    if (!acc.degree || acc.degree < degree) {
+      return { countryName, degree };
+    }
+    return acc;
+  }, {});
+};
 
-    return (
-      <div>
-        Most isolated country is {maxIsolatedCountry.country} with an isolation
-        degree of {maxIsolatedCountry.isolationDegree}
-      </div>
-    );
-  }
-}
+const Agent = ({ agentsList }) => {
+  const maxIsolatedCountry = getMaxIsolatedCountry(
+    getCountriesAndAgentsNormalized(agentsList)
+  );
+
+  return (
+    <div>
+      Most isolated country is {maxIsolatedCountry.countryName} with an
+      isolation degree of {maxIsolatedCountry.degree}
+    </div>
+  );
+};
 
 export default Agent;
