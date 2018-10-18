@@ -21,4 +21,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
-.idea/
+tikal-fed-challenge.iml
+/.gitignore
